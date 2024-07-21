@@ -1,0 +1,1 @@
+This project is a flappy bird clone made using tkinter.
