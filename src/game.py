@@ -1,6 +1,7 @@
 import random
 
 from game_objects import Player, Obstacle
+from geometry import intersect
 
 
 class Game:
@@ -50,14 +51,25 @@ class Game:
     def collision(self):
         px, py = self.player.get_pos()
         r = self.player.r
-
+        c = (px, py, r)
         # Check player to obstacle collision
         for obstacle in self.obstacles:
-            ox, _ = obstacle.get_pos()
-            ow = obstacle.w
-            oh = obstacle.h
+            ox, oy = obstacle.get_pos()
+            w = obstacle.w
+            h = obstacle.h
 
-            if (ox + ow // 2) - (px + r) <= 0 and py >= oh:
+            x0 = ox - w // 2
+            y0 = self.h
+            x1 = ox + w // 2
+            y1 = self.h - h
+
+            p1 = (x0, y1)
+            p2 = (x1, y1)
+            p3 = (x0, y0)
+            p4 = (x1, y0)
+
+            # Check obstacle collision
+            if intersect(c, p1, p2, p3, p4):
                 return True
 
         # Check floor collision
@@ -65,8 +77,7 @@ class Game:
             return True
 
         return False
-    
+
     def event_handler(self, event):
         if event.keysym == "space":
             self.player.jump()
-
